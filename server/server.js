@@ -1,24 +1,28 @@
 var server = require('./routes.js');
 var https = require('https');
+var http = require('http');
 var fs = require('fs');
 
 var port = process.env.PORT || 80;
 
-server.listen(port, function() {
-  console.log(`Web server listening on port ${port}`);
-});
+// For deployment use port 80
+var port = process.env.PORT || 80;
+// var port = process.env.PORT || 8000;
 
+// More deployment stuff, for https connections use port 443 and credentials
 var options = {
   key: fs.readFileSync('/etc/pki/tls/private/localhost.key', 'utf8'),
   cert: fs.readFileSync('/etc/pki/tls/certs/localhost.crt', 'utf8')
 }
 
 var secureServer = https.createServer(options, server).listen(443);
-
 var io = require("socket.io").listen(secureServer);
+var server = http.createServer(server).listen(port);
 
 
 
+
+// var io = require("socket.io").listen(server);
 
 
 
